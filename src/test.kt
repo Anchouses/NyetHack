@@ -13,13 +13,13 @@ val addLambda = { a: Int, b: Int ->
 val multy = {a: Int, b: Int ->
     a * b
 }
-    val unicod = '\u0159'
+    val unicod = '\u0059'
     println(unicod)
 
     "Dragon's Breath".forEach{
         println("$it\n")
     }
-
+Integer.toBinaryString(42)
 operateOnNumbers(2,4, addLambda)
 operateOnNumbers(3, 5, multy)
 }
