@@ -6,7 +6,7 @@ var playerSilver = 10
 var playerDracoin = (1.43 * (playerGold + playerSilver / 100)).roundToInt()
 fun main(args: Array<String>){
 
-    placeOrder("shandy,Dragon's Breath,5.11")
+    placeOrder("shandy,Dragons Breath,5.11")
 
 }
 
