@@ -1,74 +1,104 @@
 import kotlin.math.roundToInt
+import java.io.File
 
 const val TAVERN_NAME = "Lorry's Folly"
-var playerGold = 10
-var playerSilver = 10
-var playerDracoin = (1.43 * (playerGold + playerSilver / 100)).roundToInt()
+
+val patronList = mutableListOf("Eli", "Mordoc", "Sophie")
+val lastName = listOf("Ironfoot", "Ferndeorth", "Baggins")
+var uniquePatrons = mutableSetOf<String>()
+val menuList = File("dataNH/tavern-menu-items.txt")
+    .readText()
+    .split("\n")
+var patronGold = mutableMapOf<String, Double>()
+var leavePatron = mutableMapOf<String, Double>()
+var set = mutableMapOf<String, Double>()
+
 fun main(args: Array<String>){
 
-    placeOrder("shandy,Dragons Breath,5.11")
+    var isTavernOpen = true
+    val isClosingTime = false
+    while (isTavernOpen == true){
+        if (isClosingTime) {
+            isTavernOpen = false
+        }
+        println("Having a grand old time!")
+        break
+    }
 
+
+    (0..9).forEach{
+        val first = patronList.shuffled().first()
+        val last = lastName.shuffled().first()
+        val name = "$first $last"
+        uniquePatrons += name
+    }
+
+    uniquePatrons.forEach{
+        patronGold[it] = 6.0
+    }
+
+
+    var orderCount = 0
+    while (orderCount <= 9){
+        placeOrder(uniquePatrons.shuffled().first(),
+            menuList.shuffled().first())
+        orderCount ++
+    }
+
+    displayPatronBalances()
+
+    println(uniquePatrons)
+    println(patronGold)
+    println(leavePatron)
+    println(set)
+    patronGold = set
+    println(patronGold)
+}
+// Совершаем покупку
+fun performPurchase(price: Double, patronName: String) {
+    val totalPurse = patronGold.getValue(patronName)
+    patronGold[patronName] = totalPurse - price
 }
 
-fun performPurchase(price: Double, tavernMaster: String): Boolean {        //производить закупки
-    displayBalance()
+fun displayPatronBalances(){
 
-    val totalPurse = playerGold + (playerSilver/100.0)  //всего в кошельке
+    patronGold.forEach { (patron, balance) ->
+       println("$patron, balance: ${"%.2f".format(balance)}")
+        if (balance <= 0.0){
+            println("Bouncer say: $patron, you have no money, pal! Get out!")
 
-//    println("Purchasing item for $price")     //покупка товара за цену
+            uniquePatrons.remove(patron)
 
-    return if (totalPurse < price) {
-        println("$tavernMaster: you haven't enough money, pal")
-        false
-    } else {
-        val remainingBalance = totalPurse - price    //изменение баланса
-//    println("Remaining Balance: ${"%.2f".format(remainingBalance)}")
-        val remainingGold = remainingBalance.toInt()
-        val remainingSilver = (remainingBalance % 1 * 100).roundToInt()
-        val remainingDracoin = (remainingBalance * 1.43).roundToInt()
-        playerGold = remainingGold
-        playerSilver = remainingSilver
-        playerDracoin = remainingDracoin
-        true
+            leavePatron += patron to balance
+        } else {
+            set += patron to balance
+        }
+
     }
 }
-
-private fun displayBalance(){
-    println("Player's purse balance: Gold $playerGold, Silver $playerSilver, or in Dracoin $playerDracoin")
-}
-
-
- fun placeOrder(menuData: String){
+// Оформляем заказ
+ fun placeOrder(patronName: String, menuData: String){
     val indexOfApostrophe = TAVERN_NAME.indexOf('\'')
     val tavernMaster = TAVERN_NAME.substring(0 until indexOfApostrophe)
-    println("$NAME speaks with $tavernMaster about his order")
+    println("$patronName speaks with $tavernMaster about his order")
     val (type, name, price) = menuData.split(',')
 
-    val message = "$NAME buys a $name ($type) of $price"
+    val message = "$patronName buys a $name ($type) of $price"
     println(message)
 
-    if (performPurchase(price.toDouble(), tavernMaster)){
-        var phrase = if (name == "Dragon's Breath"){
-            "$NAME exclaims: ${toDragonSpeak("Ah, delicious $name!")}"
+    performPurchase(price.toDouble(), patronName)
+
+    var phrase = if (name == "Dragon's Breath"){
+        "$patronName exclaims: ${toDragonSpeak("Ah, delicious $name!")}"
         } else {
-            "$NAME says: Thanks for the $name!"
+            "$patronName says: Thanks for the $name!"
         }
-        println(phrase)
-    }
+    println(phrase)
 
-     displayBalance()
-
-    var dragonsBreathKeg = 5.0
-    var order = 12
-    if (name == "Dragon's Breath") order = order.plus(1)
-    val orderVolume = 0.125
-    val residueDragonsBreath = dragonsBreathKeg - (orderVolume * order)
-    dragonsBreathKeg = residueDragonsBreath
-    println("Only ${"%.2f".format(dragonsBreathKeg)} gallons of $type $name left")
 }
 
 
-
+//Драконий язык
 private fun toDragonSpeak(phrase: String) =
     phrase.replace(Regex("[aAeEiIoOuU]")) {
         when (it.value) {
