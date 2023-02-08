@@ -1,3 +1,5 @@
+package com.bignerdranch.nyethack
+
 fun main(args:Array<String>){
     var swordsJuggling: Int? = null
     val isJugglingProficient = (1..3).random()
@@ -16,9 +18,9 @@ fun main(args:Array<String>){
 }
 
 fun proficiencyCheck(swordsJiggling: Int?){
-    checkNotNull(swordsJiggling) { "Player cannot juggle swords" }
+    checkNotNull(swordsJiggling) { "com.bignerdranch.nyethack.Player cannot juggle swords" }
 }
 
 class UnskilledSwordJugglerException():
-    IllegalStateException("Player cannot juggle swords, he is asshole")
+    IllegalStateException("com.bignerdranch.nyethack.Player cannot juggle swords, he is asshole")
 
