@@ -14,7 +14,9 @@ class Player(_name: String,
             it.uppercase()
     }} of $homeTown"
 
-    val homeTown = selectHomeTown()
+    val homeTown by lazy { selectHomeTown() }
+
+    var currentPosition = Coordinate(1, 0)
 
     init {
         require(healthPoints > 0, {"healthPoints must ve greater than zero"})
@@ -41,6 +43,7 @@ class Player(_name: String,
             in 25..74 -> "looks pretty hurt."
             else -> "is in awful condition!"
         }
+
     // Огненное зелье
     fun castFireball(numFireballs: Int = 2) =
     println("A glass of Fireball springs into existence. (x$numFireballs)")
