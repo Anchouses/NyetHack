@@ -55,6 +55,6 @@ class Player(_name: String,
         .shuffled()
         .first()
 
-}
+ }
 
 
